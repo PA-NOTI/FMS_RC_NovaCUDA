@@ -622,27 +622,30 @@ int main()
         t_tot / 60.0 / 60.0 / 24.0 << endl;
 
     */
-    /*
+    
     // !write (iname,frmat) int(t_tot/60.0_dp/60.0_dp/24.0_dp)
     //open(newunit=u,file='FMS_RC_pp.out',action='readwrite')
     myfile.open("FMS_RC_pp.out");
 
     for (i = 0; i <  nlay; i++)
     {
+        
 
         myfile << i << " | " << pl[i] << " | " << T[i] << " | " <<
-            dT_rad[i] << " | " << dT_conv[i] << " | " << k_V_l[0][i] <<
-            " | " << k_V_l[1][i] << " | " << k_V_l[2][i] << " | " <<
-            k_IR_l[0][i] << " | " << k_IR_l[1][i] << endl;
+            dT_rad[i] << " | " << dT_conv[i] << " | " << k_V_l[0 * ncol * nlay + 0 * nlay + i] <<
+            " | " << k_V_l[0*ncol*nlay+1*nlay+i] << " | " << k_V_l[0 * ncol * nlay + 2 * nlay + i] << " | " <<
+            k_IR_l[0 * ncol * nlay + 0 * nlay + i] << " | " << k_IR_l[0 * ncol * nlay + 1 * nlay + i] << endl;
     }
     myfile.close();
 
-
+    /*
     cout <<  Tint << " | " <<  Tirr << " | " <<
          p0 << " | " << pu << " | " <<  mu_s << " | " <<
          gam << endl;
 
     */
+
+    
     // print time difference <<<<<<<
     double seconds;
     seconds = difftime(timer1, timer2);
