@@ -6,7 +6,6 @@ FMS_RC_NovaCUDA.vcxproj.user
 *.py
 *.sin
 FMS_RC.code-workspace
-/x64
+x64/
 .gitignore
-/x64/Debug
 .gitattributes
