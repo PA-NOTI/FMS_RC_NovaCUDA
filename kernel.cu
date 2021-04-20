@@ -8,6 +8,7 @@
 #include <fstream>
 #include <time.h>
 #include "IC_mod.h"
+#include "picket_fence_cuda.h"
 
 
 using namespace std;
@@ -40,6 +41,187 @@ cudaError_t addWithCuda(
     unsigned int ncol
 );
 
+
+__global__ void kernel_RT_loop(
+    //int nlay,
+    //int nlay1,
+    double* dT_rad,
+    double* dT_conv,
+    double* T,            /// parallel parameter
+    double* pl,
+    double* pe,
+    double* met,
+    double* k_IR_l,
+    double* k_V_l,
+    double* gam_V,
+    double* gam_1,
+    double* gam_2,
+    double* Beta_V,
+    double* Beta,
+    double* net_F,  /// parallel parameter
+    double* mu_s,
+    double* F0,
+    double* Fint,
+    double* grav,
+    double* AB,
+    double* cp_air,
+    double* kappa_air,
+    double* t_step,
+    int* n_step,
+    int num,
+    const int nlay,
+    double* tau_Ve__df_e, double* tau_IRe__df_e, double* Te__df_e, double* be__df_e, //Kitzman working variables
+    double* sw_down__df_e, double* sw_down_b__df_e, double* sw_up__df_e,
+    double* lw_down__df_e, double* lw_down_b__df_e,
+    double* lw_up__df_e, double* lw_up_b__df_e,
+    double* lw_net__df_e, double* sw_net__df_e,
+
+    double* dtau__dff_l, double* del__dff_l, // lw_grey_updown_linear working variables
+    double* edel__dff_l, double* e0i__dff_l, double* e1i__dff_l,
+    double* Am__dff_l, double* Bm__dff_l,
+    double* lw_up_g__dff_l, double* lw_down_g__dff_l,
+
+    double* Tl_cc__df_l, double* d_p__df_l //dry_adj_Ray working variables
+)
+{
+
+
+
+    int id = blockIdx.x * blockDim.x + threadIdx.x;
+    //double t_tot = 0.0;
+    //int inan = 0;
+
+    if (id < num) {
+
+        for (int i = 0; i < n_step[id]; i++)
+        {
+
+            for (int k = 0; k < nlay; k++)
+            {
+                dT_rad[id * nlay + k] = 0.0;
+                dT_conv[id * nlay + k] = 0.0;
+            }
+
+            // kappa calculation loop here if using non-constant kappa
+            for (int level = 0; level < nlay; level++)
+            {
+
+                kernel_k_Ross_Freedman(T[id * nlay + level], pl[id * nlay + level], met[id], k_IR_l[id * nlay * 3 + 0 * nlay + level]);
+
+                // Find the visual Rosseland mean opacity from gam_V
+
+
+                for (int channel = 0; channel < 3; channel++)
+                {
+                    k_V_l[id * nlay * 3 + channel * nlay + level] = k_IR_l[id * nlay * channel * nlay + 0] * gam_V[id * nlay * 3 + channel * nlay + level];
+                }
+
+
+                // Find the IR Rosseland mean opacity in each IR picket fence band
+                // Note: 2nd band done first here to avoid overwrite
+
+                for (int channel = 0; channel < 2; channel++)
+                {
+                    k_IR_l[id * nlay * 2 + channel * nlay + level] = k_IR_l[id * nlay * 2 + 0 * nlay + level] * gam_2[id];
+                    k_IR_l[id * nlay * 2 + channel * nlay + level] = k_IR_l[id * nlay * 2 + 0 * nlay + level] * gam_1[id];
+                }
+
+
+
+            }
+
+
+
+
+            /*
+            // !! Radiation - Comment in what scheme you want to use - Heng model won't work!
+            //!call Heng_TS_noscatt(nlay, nlay1, T, Ts, pl, pe, tau_IRl, tau_IRe, tau_V, dT_rad, dT_s, mu, F0, Fint)
+            //!call Toon_TS_noscatt(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Fint, grav, AB)
+            //!call DISORT_TS(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Tint, grav, AB)
+            Kitzmann::Kitzmann_TS_noscatt(nlay,
+                nlay+1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F,
+                mu_s, F0, Fint, grav, AB,
+
+                tau_Ve__df_e, tau_IRe__df_e, Te__df_e, be__df_e, //Kitzman working variables
+                sw_down__df_e, sw_down_b__df_e, sw_up__df_e,
+                lw_down__df_e, lw_down_b__df_e,
+                lw_up__df_e, lw_up_b__df_e,
+                lw_net__df_e, sw_net__df_e,
+
+                dtau__dff_l, del__dff_l, // lw_grey_updown_linear working variables
+                edel__dff_l, e0i__dff_l, e1i__dff_l,
+                Am__dff_l, Bm__dff_l,
+                lw_up_g__dff_l, lw_down_g__dff_l);
+
+            for (int level = 0; level < nlay; level++)
+            {
+                dT_rad[level] = (grav / cp_air) *
+                    (net_F[level + 1] - net_F[level]) / (pe[level + 1] - pe[level]);
+
+            }
+
+
+
+            // Dry convective adjustment using Ray's code
+            FMS_dry_adj_Ray::Ray_dry_adj(nlay, nlay+1,
+                t_step, kappa_air, T, pl, pe, dT_conv,
+                Tl_cc__df_l, d_p__df_l);
+
+            // Forward march the temperature change from convection
+            for (int level = 0; level < nlay; level++)
+            {
+                T[level] = T[level] + t_step * (dT_conv[level] + dT_rad[level]);
+            }
+
+
+            for (int k = 0; k < nlay; k++)
+            {
+
+
+
+                if (isnan(T[k]) == true)
+                {
+                    */
+                    /*
+                    for (int n = 0; n < nlay; n++)
+                    {
+
+                        cout << " k = " << k << endl;
+                        cout << n << " | " << T[n] << " | " << net_F[n] << " | " <<
+                            dT_rad[n] << " | " << dT_conv[n] << endl;
+                    }
+
+
+                    cout <<  nlay1 << " | " <<
+                        net_F[ nlay1] << endl;
+                    */
+                    /*
+                            inan = 1;
+                            break;
+                        }
+                    }
+                    if (inan == 1)
+                    {
+                        break;
+                    }
+
+                    //t_tot = t_tot + t_step;
+
+                */
+                
+
+                        }
+
+                    }
+
+
+
+
+
+
+                }
+
+                
 
 
 int main()
@@ -995,14 +1177,14 @@ cudaError_t addWithCuda(
     // This equation pads an extra CTA to the grid if N cannot evenly be divided
     // by NUM_THREADS (e.g. N = 1025, NUM_THREADS = 1024)
     //dim3 NUM_BLOCKS = 1;   // (N + NUM_THREADS - 1) / NUM_THREADS;
-
-    //dim3 NBRT((2 / NUM_THREADS) + 1, 1, 1);
-    //dim3 NB = 2;
+    dim3 NB = 2;
+    dim3 NBRT((2 / NB) + 1, 1, 1);
+    
 
 
     // Launch the kernel on the GPU
-    /*
-    kernel_RT_loop << <NBRT, NUM_THREADS >> > (
+    
+    kernel_RT_loop << <NBRT, NB >> > (
         dev_dT_rad,
         dev_dT_conv,
         dev_T,
@@ -1041,7 +1223,7 @@ cudaError_t addWithCuda(
         lw_up_g__dff_l, lw_down_g__dff_l,
 
         Tl_cc__df_l, d_p__df_l); // dry_adj_Ray working variables
-        */
+        
 
 
                 // Check for any errors launching the kernel
