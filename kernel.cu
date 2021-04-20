@@ -1132,7 +1132,7 @@ cudaError_t addWithCuda(
 
     // Launch the kernel on the GPU
     
-    kernel_RT_loop << <1, 2 >> > (
+    kernel_RT_loop << <1, 1 >> > (
         dev_dT_rad,
         dev_dT_conv,
         dev_T,
