@@ -1240,7 +1240,7 @@ cudaError_t addWithCuda(
                 fprintf(stderr, "dev_T cudaMalloc ToHost failed!");
                 goto Error;
             }
-            cudaStatus = cudaMemcpy(host_k_IR_l, dev_k_IR_l, ncol * 3 * nlay * sizeof(double), cudaMemcpyDeviceToHost);
+            cudaStatus = cudaMemcpy(host_k_IR_l, dev_k_IR_l, ncol * 2 * nlay * sizeof(double), cudaMemcpyDeviceToHost);
             if (cudaStatus != cudaSuccess) {
                 fprintf(stderr, "dev_k_IR_l cudaMalloc ToHost failed!");
                 goto Error;
