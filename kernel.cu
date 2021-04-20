@@ -106,14 +106,14 @@ __global__ void kernel_RT_loop(
             for (int level = 0; level < nlay; level++)
             {
 
-                kernel_k_Ross_Freedman(T[id * nlay + level], pl[id * nlay + level], met[id], k_IR_l[id * nlay * 3 + 0 * nlay + level]);
+                kernel_k_Ross_Freedman(T[id * nlay + level], pl[id * nlay + level], met[id], k_IR_l[id * nlay * 2 + 0 * nlay + level]);
 
                 // Find the visual Rosseland mean opacity from gam_V
 
 
                 for (int channel = 0; channel < 3; channel++)
                 {
-                    k_V_l[id * nlay * 3 + channel * nlay + level] = k_IR_l[id * nlay * channel * nlay + 0] * gam_V[id * nlay * 3 + channel * nlay + level];
+                    k_V_l[id * nlay * 3 + channel * nlay + level] = k_IR_l[id * nlay * 2 + 0 * nlay + level] * gam_V[id * 3 + channel];
                 }
 
 
@@ -418,12 +418,14 @@ int main()
     for (int c = 0; c < ncol; c++)
     {
         for (i = 0; i < nlay; i++)
+
         {
-            k_V_l[c * nlay + 0 + i] = k_V[c];
-            k_IR_l[c * nlay + 0 + i] = k_IR[c];
-            k_V_l_1D[c * nlay + i] = k_V[c];
-            k_IR_l_1D[c * nlay + 0 + i] = k_IR[c];
+            k_V_l[c * nlay*3 + 0 + i] = k_V[c];
+            k_IR_l[c * nlay*2 + 0 + i] = k_IR[c];
+
         }
+        k_V_l_1D[c * nlay] = k_V[c];
+        k_IR_l_1D[c * nlay] = k_IR[c];
     }
 
     double fl = (double)1.0;
