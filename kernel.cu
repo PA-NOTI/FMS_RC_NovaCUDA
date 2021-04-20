@@ -31,7 +31,7 @@ cudaError_t addWithCuda(
     double* cp_air,
     double* kappa_air,
     double* t_step,
-    int* n_step,
+    double* n_step,
     double* host_k_IR_l,
     double* host_k_V_l,
     double* dT_rad,
