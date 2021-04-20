@@ -133,14 +133,14 @@ __global__ void kernel_RT_loop(
 
 
 
-            /*
+
             // !! Radiation - Comment in what scheme you want to use - Heng model won't work!
             //!call Heng_TS_noscatt(nlay, nlay1, T, Ts, pl, pe, tau_IRl, tau_IRe, tau_V, dT_rad, dT_s, mu, F0, Fint)
             //!call Toon_TS_noscatt(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Fint, grav, AB)
             //!call DISORT_TS(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Tint, grav, AB)
-            Kitzmann::Kitzmann_TS_noscatt(nlay,
-                nlay+1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F,
-                mu_s, F0, Fint, grav, AB,
+            Kitzmann_TS_noscatt(nlay,
+                nlay + 1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F,
+                mu_s[0], F0[0], Fint[0], grav[0], AB[0],
 
                 tau_Ve__df_e, tau_IRe__df_e, Te__df_e, be__df_e, //Kitzman working variables
                 sw_down__df_e, sw_down_b__df_e, sw_up__df_e,
@@ -155,7 +155,7 @@ __global__ void kernel_RT_loop(
 
             for (int level = 0; level < nlay; level++)
             {
-                dT_rad[level] = (grav / cp_air) *
+                dT_rad[level] = (grav[0] / cp_air[0]) *
                     (net_F[level + 1] - net_F[level]) / (pe[level + 1] - pe[level]);
 
             }
@@ -163,26 +163,26 @@ __global__ void kernel_RT_loop(
 
 
             // Dry convective adjustment using Ray's code
-            FMS_dry_adj_Ray::Ray_dry_adj(nlay, nlay+1,
-                t_step, kappa_air, T, pl, pe, dT_conv,
+            Ray_dry_adj(nlay, nlay + 1,
+                t_step[0], kappa_air[0], T, pl, pe, dT_conv,
                 Tl_cc__df_l, d_p__df_l);
 
             // Forward march the temperature change from convection
             for (int level = 0; level < nlay; level++)
             {
-                T[level] = T[level] + t_step * (dT_conv[level] + dT_rad[level]);
+                T[level] = T[level] + t_step[0] * (dT_conv[level] + dT_rad[level]);
             }
 
 
             for (int k = 0; k < nlay; k++)
             {
 
-
+                /*
 
                 if (isnan(T[k]) == true)
                 {
-                    */
-                    /*
+
+
                     for (int n = 0; n < nlay; n++)
                     {
 
@@ -207,19 +207,19 @@ __global__ void kernel_RT_loop(
 
                     //t_tot = t_tot + t_step;
 
-                */
-                
-
-                        }
-
-                    }
 
 
+                    */
+            }
 
+
+        }
 
 
 
-                }
+
+    }
+}
 
                 
 
