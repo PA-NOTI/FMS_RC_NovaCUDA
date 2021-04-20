@@ -483,6 +483,15 @@ int main()
         {
             Beta[c * 2 + i] = work_Beta[i];
         }
+        for (int i = 0; i < nlay; i++)
+        {
+             pl[c * nlay + i] = work_pl[i];
+            T[c * nlay + i] = work_T[i];
+        }
+        for (int i = 0; i < nlay1; i++)
+        {
+            pe[c * nlay1 + i] = work_pe[i];
+        }
     }
 
 
@@ -524,45 +533,9 @@ int main()
     ////  time code here
     time(&timer2);
 
-
-
-
-
     //////////////////////////////////////////////////////////////////////////
 
-    // Initialize device parameters
-    /*
-    size_t double3;
-    double3 = 3 * sizeof(float);
-    double *host_k_IR_l, *host_k_V_l;
-    host_k_IR_l = (double*)malloc(double3);
-    host_k_V_l = (double*)malloc(double3);
-
-
-    for (int i = 0; i < nlay; i++)
-    {
-        for (int k = 0; k < 2; k++)
-        {
-            host_k_IR_l[2 * nlay] = k_IR_l[k][i];
-        }
-    }
-
-    for (int i = 0; i < nlay; i++)
-    {
-        for (int k = 0; k < 3; k++)
-        {
-            host_k_V_l[3 * nlay] = k_V_l[k][i];
-        }
-    }
-
-    */
-
-
-
-
-
-
-    
+        
     // Add vectors in parallel.
     cudaError_t cudaStatus = addWithCuda( T,
         pl,
