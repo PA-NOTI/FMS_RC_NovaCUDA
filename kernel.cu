@@ -784,12 +784,12 @@ cudaError_t addWithCuda(
         fprintf(stderr, "dev_met cudaMalloc failed!");
         goto Error;
     }
-    cudaStatus = cudaMalloc((void**)&dev_k_IR_l, 2 * nlay * sizeof(double));
+    cudaStatus = cudaMalloc((void**)&dev_k_IR_l, ncol * 2 * nlay * sizeof(double));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "dev_k_IR_l cudaMalloc failed!");
         goto Error;
     }
-    cudaStatus = cudaMalloc((void**)&dev_k_V_l, 3 * nlay * sizeof(double));
+    cudaStatus = cudaMalloc((void**)&dev_k_V_l, ncol * 3 * nlay * sizeof(double));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "dev_k_V_l cudaMalloc failed!");
         goto Error;
@@ -992,37 +992,7 @@ cudaError_t addWithCuda(
         fprintf(stderr, "d_p__df_l cudaMalloc failed!");
         goto Error;
     }
-    // Allocate memory on the device
-
-    //cudaMalloc(&dev_nlay, sizeof(int));
-    //cudaMalloc(&dev_nlay1, sizeof(const int));
-    //cudaMalloc((void**)&dev_dT_rad, nlay * sizeof(double));
-    //cudaMalloc((void**)&dev_dT_conv, nlay * sizeof(double));
-    //cudaMalloc((void**)&dev_T, nlay * sizeof(double));
-    //cudaMalloc((void**)&dev_pl, nlay * sizeof(double));
-    //cudaMalloc((void**)&dev_pe, nlay1 * sizeof(double));
-    //cudaMalloc(&dev_met, sizeof(double));
-    //cudaMalloc((void**)&dev_k_IR_l, 2 * nlay * sizeof(double));
-    //cudaMalloc((void**)&dev_k_V_l, 3 * nlay * sizeof(double));
-    //cudaMalloc((void**)&dev_gam_V, 3 * sizeof(double));
-    //cudaMalloc((void**)&dev_gam_1, sizeof(double));
-    //cudaMalloc((void**)&dev_gam_2, sizeof(double));
-    //cudaMalloc((void**)&dev_Beta_V, 3 * sizeof(double));
-    //cudaMalloc((void**)&dev_Beta, 2 * sizeof(double));
-    //cudaMalloc((void**)&dev_net_F, (1+nlay) * sizeof(double));
-    //cudaMalloc((void**)&dev_mu_s, sizeof(double));
-    //cudaMalloc((void**)&dev_F0, sizeof(double));
-    //cudaMalloc((void**)&dev_Fint, sizeof(double));
-    //cudaMalloc((void**)&dev_grav, sizeof(double));
-    //cudaMalloc((void**)&dev_AB, sizeof(double));
-    //cudaMalloc((void**)&dev_cp_air, sizeof(double));
-    //cudaMalloc((void**)&dev_kappa_air, sizeof(double));
-    //cudaMalloc((void**)&dev_t_step, sizeof(int));
-    //cudaMalloc((void**)&dev_n_step, sizeof(int));
-    //cudaMalloc((void**)&dev_num, sizeof(int));
-
-
-
+    
 
     // Copy data from the host to the device (CPU -> GPU)
 
