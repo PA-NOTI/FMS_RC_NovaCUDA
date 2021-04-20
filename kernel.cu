@@ -1177,14 +1177,14 @@ cudaError_t addWithCuda(
     // This equation pads an extra CTA to the grid if N cannot evenly be divided
     // by NUM_THREADS (e.g. N = 1025, NUM_THREADS = 1024)
     //dim3 NUM_BLOCKS = 1;   // (N + NUM_THREADS - 1) / NUM_THREADS;
-    dim3 NB = 2;
-    dim3 NBRT((2 / NB) + 1, 1, 1);
+    //dim3 NB = 2;
+    //dim3 NBRT((2 / NB) + 1, 1, 1);
     
 
 
     // Launch the kernel on the GPU
     
-    kernel_RT_loop << <NBRT, NB >> > (
+    kernel_RT_loop << <1, 1 >> > (
         dev_dT_rad,
         dev_dT_conv,
         dev_T,
