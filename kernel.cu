@@ -47,7 +47,7 @@ int main()
     double t_step[ncol] = { 30.0 };
 
     // Number of steps
-    int n_step[ncol] = { (double)(1e5) };
+    double n_step[ncol] = { 1e5 };
 
     // Constants
     //double R = 8.31446261815324; //     ! Ideal gas constant
