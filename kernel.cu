@@ -499,7 +499,7 @@ cudaError_t addWithCuda(
     double* cp_air,
     double* kappa_air,
     double* t_step,
-    int* n_step,
+    double* n_step,
     double* host_k_IR_l,
     double* host_k_V_l,
     double* dT_rad,
@@ -538,7 +538,7 @@ cudaError_t addWithCuda(
     double* dev_cp_air;
     double* dev_kappa_air;
     double* dev_t_step;
-    int* dev_n_step;
+    double* dev_n_step;
     //int* dev_num;
 
 
@@ -699,12 +699,12 @@ cudaError_t addWithCuda(
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
     }
-    cudaStatus = cudaMalloc((void**)&dev_t_step, ncol * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_t_step, ncol * sizeof(double));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
     }
-    cudaStatus = cudaMalloc((void**)&dev_n_step, ncol * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_n_step, ncol * sizeof(double));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
