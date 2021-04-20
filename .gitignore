@@ -7,3 +7,6 @@ FMS_RC_NovaCUDA.vcxproj.user
 *.sin
 FMS_RC.code-workspace
 /x64
+.gitignore
+/x64/Debug
+.gitattributes
