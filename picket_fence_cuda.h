@@ -1,5 +1,6 @@
 #pragma once
 #include <cuda_runtime.h>
+#include <math.h>
 //////// kernel version ///////////////////////////////////////////
 
         // Calculates the IR band Rosseland mean opacity (local T) according to the
@@ -530,24 +531,23 @@ __device__  void lw_grey_updown_poly(int nlay, int nlay1, double* be__df_e,
 
 
         // work variables
-        //int i;
-        //double Finc_B;
+        double Finc_B;
 
 
        
         // start operation
 
         // Find temperature at layer edges through linear interpolation and extrapolation
-        for (i = 1; i < nlay; i++)
+        for (int i = 1; i < nlay; i++)
         {
-            Kitzmann::linear_log_interp(pe[i], pl[i - 1], pl[i], Tl[i - 1], Tl[i], Te__df_e[i]);
+            linear_log_interp(pe[i], pl[i - 1], pl[i], Tl[i - 1], Tl[i], Te__df_e[i]);
         }
         Te__df_e[0] = Tl[0] + (pe[0] - pe[1]) / (pl[0] - pe[1]) * (Tl[0] - Te__df_e[1]);
         Te__df_e[nlay1 - 1] = Tl[nlay - 1] + (pe[nlay1 - 1] - pe[nlay - 1]) / (pl[nlay - 1] - pe[nlay - 1]) *
             (Tl[nlay - 1] - Te__df_e[nlay - 1]);
 
         // Shortwave fluxes
-        for (i = 0; i < nlay1; i++)
+        for (int i = 0; i < nlay1; i++)
         {
             sw_down__df_e[i] = 0.0;
             sw_up__df_e[i] = 0.0;
@@ -564,14 +564,14 @@ __device__  void lw_grey_updown_poly(int nlay, int nlay1, double* be__df_e,
             sw_grey_down(nlay, Finc_B, tau_Ve__df_e, sw_down_b__df_e, mu_s);
 
             // Sum all bands
-            for (i = 0; i < nlay1; i++)
+            for (int i = 0; i < nlay1; i++)
             {
                 sw_down__df_e[i] = sw_down__df_e[i] + sw_down_b__df_e[i];
             }
         }
 
         // Long wave two-stream fluxes
-        for (i = 0; i < nlay1; i++)
+        for (int i = 0; i < nlay1; i++)
         {
             lw_down__df_e[i] = 0.0;
             lw_up__df_e[i] = 0.0;
@@ -582,7 +582,7 @@ __device__  void lw_grey_updown_poly(int nlay, int nlay1, double* be__df_e,
             tau_struct(nlay, grav, pe, k_IR_l, channel, tau_IRe__df_e);
 
             // Blackbody fluxes (note divide by pi for correct units)
-            for (i = 0; i < nlay1; i++)
+            for (int i = 0; i < nlay1; i++)
             {
                 be__df_e[i] = StBC * pow((double)(Te__df_e[i]), ((double)4.0)) / pi * Beta[channel];
             }
@@ -597,7 +597,7 @@ __device__  void lw_grey_updown_poly(int nlay, int nlay1, double* be__df_e,
 
 
             // Sum all bands
-            for (i = 0; i < nlay1; i++)
+            for (int i = 0; i < nlay1; i++)
             {
                 lw_up__df_e[i] = lw_up__df_e[i] + lw_up_b__df_e[i];
                 lw_down__df_e[i] = lw_down__df_e[i] + lw_down_b__df_e[i];
@@ -606,7 +606,7 @@ __device__  void lw_grey_updown_poly(int nlay, int nlay1, double* be__df_e,
         }
 
         // Net fluxes
-        for (i = 0; i < nlay1; i++)
+        for (int i = 0; i < nlay1; i++)
         {
             lw_net__df_e[i] = lw_up__df_e[i] - lw_down__df_e[i];
             sw_net__df_e[i] = sw_up__df_e[i] - sw_down__df_e[i];
