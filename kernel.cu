@@ -67,7 +67,7 @@ __global__ void kernel_RT_loop(
     double* cp_air,
     double* kappa_air,
     double* t_step,
-    int* n_step,
+    double* n_step,
     int num,
     const int nlay,
     double* tau_Ve__df_e, double* tau_IRe__df_e, double* Te__df_e, double* be__df_e, //Kitzman working variables
