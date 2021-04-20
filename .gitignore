@@ -1,0 +1,9 @@
+test.exe
+test.cpp
+FMS_RC.exe
+FMS_RC_NovaCUDA.vcxproj
+FMS_RC_NovaCUDA.vcxproj.user
+*.py
+*.sin
+FMS_RC.code-workspace
+/x64

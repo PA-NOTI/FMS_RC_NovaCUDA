@@ -12,6 +12,7 @@
 //#include <math.h>
 
 
+
 // Calculates the IR band Rosseland mean opacity (local T) according to the
     // Freedman et al. (2014) fit and coefficents
 
