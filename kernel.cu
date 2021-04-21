@@ -465,9 +465,9 @@ int main()
     cout << "Teff | AB | gam_V [0,1,2] | Beta_V [0,1,2] | Beta[0,1] | gam_1 | gam_2 | gam_P | tau_lim | prc" << endl;
     cout << Teff[0] << " | " << AB[0] << " | " <<
         gam_V[0] << " | " << Beta_V[0] << " | " <<
-        Beta[0] << " | " << gam_1 << " | " <<
-        gam_2 << " | " << gam_P << " | " <<
-        tau_lim << " | " << prc[0] / 1e5 << endl;
+        Beta[0] << " | " << gam_1[0] << " | " <<
+        gam_2[0] << " | " << gam_P[0] << " | " <<
+        tau_lim[0] << " | " << prc[0] / 1e5 << endl;
     cout << "   " << " | " << "   " << " | " <<
         gam_V[1] << " | " << Beta_V[1] << " | " <<
         Beta[1] << " | " << "   " << " | " <<
