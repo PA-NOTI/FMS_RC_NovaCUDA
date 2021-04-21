@@ -138,9 +138,9 @@ __global__ void kernel_RT_loop(
             //!call Heng_TS_noscatt(nlay, nlay1, T, Ts, pl, pe, tau_IRl, tau_IRe, tau_V, dT_rad, dT_s, mu, F0, Fint)
             //!call Toon_TS_noscatt(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Fint, grav, AB)
             //!call DISORT_TS(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Tint, grav, AB)
-            Kitzmann_TS_noscatt(nlay,
+            Kitzmann_TS_noscatt(id, nlay,
                 nlay + 1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F,
-                mu_s[0], F0[0], Fint[0], grav[0], AB[0],
+                mu_s[id], F0[id], Fint[id], grav[0], AB[0],
 
                 tau_Ve__df_e, tau_IRe__df_e, Te__df_e, be__df_e, //Kitzman working variables
                 sw_down__df_e, sw_down_b__df_e, sw_up__df_e,
@@ -163,7 +163,7 @@ __global__ void kernel_RT_loop(
 
 
             // Dry convective adjustment using Ray's code
-            Ray_dry_adj(nlay, nlay + 1,
+            Ray_dry_adj(id,nlay, nlay + 1,
                 t_step[0], kappa_air[0], T, pl, pe, dT_conv,
                 Tl_cc__df_l, d_p__df_l);
 
