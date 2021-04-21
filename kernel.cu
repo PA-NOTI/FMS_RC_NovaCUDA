@@ -460,7 +460,7 @@ int main()
     }
 
 
-    /*
+    
     // Print variables from Parmentier non-grey scheme
     cout << "Teff | AB | gam_V [0,1,2] | Beta_V [0,1,2] | Beta[0,1] | gam_1 | gam_2 | gam_P | tau_lim | prc" << endl;
     cout << Teff[0] << " | " << AB[0] << " | " <<
@@ -479,7 +479,9 @@ int main()
         "   " << " | " << "   " << " | " <<
         "   " << " | " << "   " << endl;
     cout << "-------------------------------" << endl;
-    */
+    
+
+    
 
     // Print T-p profile
     // Write out initial conditions
@@ -492,13 +494,12 @@ int main()
     }
     myfile.close();
 
+    //////////////////////////////////////////////////////////////////////////
 
     // Time stepping loop
     //cout << "Start timestepping" << endl;
     ////  time code here
     time(&timer2);
-
-    //////////////////////////////////////////////////////////////////////////
 
         
     // Add vectors in parallel.
@@ -533,6 +534,7 @@ int main()
     }
 
     
+
 
 
 

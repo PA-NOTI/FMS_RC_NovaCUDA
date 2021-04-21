@@ -6,7 +6,7 @@
         // Calculates the IR band Rosseland mean opacity (local T) according to the
         // Freedman et al. (2014) fit and coefficents
 
-__device__ void kernel_k_Ross_Freedman(double Tin, double Pin, double met, double& k_IR) {
+__device__ void kernel_k_Ross_Freedman(double Tin, double Pin, double met, double &k_IR) {
     // dependcies
     //// powl from math
     //// log10l from math        
