@@ -177,7 +177,12 @@ __global__ void kernel_RT_loop(
             for (int k = 0; k < nlay; k++)
             {
 
-                /*
+               
+                cout << k << " | " << T[k] << " | " << net_F[k] << " | " <<
+                    dT_rad[k] << " | " << dT_conv[k] << endl;
+
+                cout << nlay << " | net_F" <<
+                    net_F[nlay+1] << endl;
 
                 if (isnan(T[k]) == true)
                 {
@@ -192,9 +197,8 @@ __global__ void kernel_RT_loop(
                     }
 
 
-                    cout <<  nlay1 << " | " <<
-                        net_F[ nlay1] << endl;
-                    */
+
+
                     /*
                             inan = 1;
                             break;
@@ -207,9 +211,9 @@ __global__ void kernel_RT_loop(
 
                     //t_tot = t_tot + t_step;
 
-
-
                     */
+
+                }
             }
 
 
