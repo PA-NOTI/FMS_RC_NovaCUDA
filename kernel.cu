@@ -173,48 +173,7 @@ __global__ void kernel_RT_loop(
                 T[level] = T[level] + t_step[0] * (dT_conv[level] + dT_rad[level]);
             }
 
-
-            for (int k = 0; k < nlay; k++)
-            {
-
-               
-                cout << k << " | " << T[k] << " | " << net_F[k] << " | " <<
-                    dT_rad[k] << " | " << dT_conv[k] << endl;
-
-                cout << nlay << " | net_F" <<
-                    net_F[nlay+1] << endl;
-
-                if (isnan(T[k]) == true)
-                {
-
-
-                    for (int n = 0; n < nlay; n++)
-                    {
-
-                        cout << " k = " << k << endl;
-                        cout << n << " | " << T[n] << " | " << net_F[n] << " | " <<
-                            dT_rad[n] << " | " << dT_conv[n] << endl;
-                    }
-
-
-
-
-                    /*
-                            inan = 1;
-                            break;
-                        }
-                    }
-                    if (inan == 1)
-                    {
-                        break;
-                    }
-
-                    //t_tot = t_tot + t_step;
-
-                    */
-
-                }
-            }
+            
 
 
         }
