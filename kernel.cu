@@ -485,6 +485,18 @@ int main()
     }
     myfile.close();
 
+    for (i = 0; i < nlay; i++)
+    {
+        //cout << i << " | " << pl[i] / 1e5 << " | " << T[i] << endl;
+        cout << i << "k_IR_l[i] " << k_IR_l[i]  << " " << k_IR_l[2*nlay+i] << endl;
+    }
+
+    for (i = 0; i < nlay; i++)
+    {
+        //cout << i << " | " << pl[i] / 1e5 << " | " << T[i] << endl;
+        cout << i << "k_V_l[i] " << k_V_l[i] << " " << k_V_l[3 * nlay + i] << " " << k_V_l[3 * nlay + i] << endl;
+    }
+
     //////////////////////////////////////////////////////////////////////////
 
     // Time stepping loop
