@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <fstream>
 #include <time.h>
-#include "IC_mod.h"
-#include "picket_fence_cuda.h"
+#include "IC_mod.cu"
+#include "picket_fence_cuda.cu"
 
 
 using namespace std;
