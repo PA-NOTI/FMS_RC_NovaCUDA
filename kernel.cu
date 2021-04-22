@@ -120,17 +120,9 @@ __global__ void kernel_RT_loop(
                 // Find the IR Rosseland mean opacity in each IR picket fence band
                 // Note: 2nd band done first here to avoid overwrite
 
-                for (int channel = 0; channel < 2; channel++)
-                {
-                    k_IR_l[id * nlay * 2 + channel * nlay + level] = k_IR_l[id * nlay * 2 + 0 * nlay + level] * gam_2[id];
-                    k_IR_l[id * nlay * 2 + channel * nlay + level] = k_IR_l[id * nlay * 2 + 0 * nlay + level] * gam_1[id];
-                }
-
-
-
+                k_IR_l[id * nlay * 2 + 1 * nlay + level] = k_IR_l[id * nlay * 2 + 0 * nlay + level] * gam_2[id];
+                k_IR_l[id * nlay * 2 + 0 * nlay + level] = k_IR_l[id * nlay * 2 + 0 * nlay + level] * gam_1[id];
             }
-
-
 
 
 
@@ -155,8 +147,8 @@ __global__ void kernel_RT_loop(
 
             for (int level = 0; level < nlay; level++)
             {
-                dT_rad[level] = (grav[0] / cp_air[0]) *
-                    (net_F[level + 1] - net_F[level]) / (pe[level + 1] - pe[level]);
+                dT_rad[id*nlay+level] = (grav[0] / cp_air[0]) *
+                    (net_F[id * (nlay+1) + level + 1] - net_F[id * (nlay+1) + level]) / (pe[id * (nlay+1) + level + 1] - pe[id * (nlay+1) + level]);
 
             }
 
@@ -170,15 +162,13 @@ __global__ void kernel_RT_loop(
             // Forward march the temperature change from convection
             for (int level = 0; level < nlay; level++)
             {
-                T[level] = T[level] + t_step[0] * (dT_conv[level] + dT_rad[level]);
+                T[id * nlay + level] = T[id * nlay + level] + t_step[0] * (dT_conv[id * nlay + level] + dT_rad[id * nlay + level]);
             }
 
             
 
 
         }
-
-
 
 
     }
@@ -280,8 +270,8 @@ int main()
     double pl[ncol * nlay];
     double k_V_l[3 * ncol * nlay];
     double k_IR_l[2 * ncol * nlay];
-    double k_V_l_1D[ncol * nlay];
-    double k_IR_l_1D[ncol * nlay];
+    double k_V_l_1D[ nlay];
+    double k_IR_l_1D[ nlay];
     double T[ncol * nlay];
     double prc[ncol];
     double Teff[ncol];
@@ -387,8 +377,7 @@ int main()
             k_IR_l[c * nlay*2 + 0 + i] = k_IR[c];
 
         }
-        k_V_l_1D[c * nlay] = k_V[c];
-        k_IR_l_1D[c * nlay] = k_IR[c];
+        
     }
 
     double fl = (double)1.0;
@@ -415,11 +404,16 @@ int main()
         {
             work_pl[i] = pl[c * nlay + i];
             work_T[i] = T[c * nlay + i];
+            k_V_l_1D[i] = k_V[c];
+            k_IR_l_1D[i] = k_IR[c];
+           
         }
         for (int i = 0; i < nlay1; i++)
         {
             work_pe[i] = pe[c * nlay1 + i];
         }
+
+       
 
         //  Parmentier IC 
         IC_profile(iIC, corr, nlay,
@@ -450,13 +444,9 @@ int main()
         }
         for (int i = 0; i < nlay; i++)
         {
-             pl[c * nlay + i] = work_pl[i];
             T[c * nlay + i] = work_T[i];
         }
-        for (int i = 0; i < nlay1; i++)
-        {
-            pe[c * nlay1 + i] = work_pe[i];
-        }
+        
     }
 
 
@@ -1123,7 +1113,6 @@ cudaError_t addWithCuda(
         dev_n_step,
         0,
         nlay,
-
         tau_Ve__df_e, tau_IRe__df_e, Te__df_e, be__df_e, //Kitzman working variables
         sw_down__df_e, sw_down_b__df_e, sw_up__df_e,
         lw_down__df_e, lw_down_b__df_e,
@@ -1223,7 +1212,6 @@ cudaError_t addWithCuda(
             cudaFree(dev_t_step);
             cudaFree(dev_n_step);
             //cudaFree(dev_num);
-
             cudaFree(tau_Ve__df_e);
             cudaFree(tau_IRe__df_e);
             cudaFree(Te__df_e);
