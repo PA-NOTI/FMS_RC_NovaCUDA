@@ -1109,7 +1109,7 @@ cudaError_t addWithCuda(
         dev_kappa_air,
         dev_t_step,
         dev_n_step,
-        0,
+        ncol,
         nlay,
         tau_Ve__df_e, tau_IRe__df_e, Te__df_e, be__df_e, //Kitzman working variables
         sw_down__df_e, sw_down_b__df_e, sw_up__df_e,
