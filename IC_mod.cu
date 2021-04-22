@@ -1,3 +1,6 @@
+#ifndef IC_mod
+
+#define IC_mod
 #pragma once
 
 // G.K.H. Lee - PA Noti
@@ -656,3 +659,4 @@ void IC_profile(int iIC, bool corr, int nlay, double p0,
 }
 
 
+#endif // IC_mod

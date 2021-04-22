@@ -1,3 +1,6 @@
+#ifndef picket_fence_cuda
+
+#define picket_fence_cuda
 #pragma once
 #include <cuda_runtime.h>
 #include <math.h>
@@ -622,3 +625,4 @@ __device__  void lw_grey_updown_poly(int nlay, int nlay1, double* be__df_e,
 
 
     }
+#endif // picket_fence_cuda
