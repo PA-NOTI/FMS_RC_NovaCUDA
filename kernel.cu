@@ -1174,11 +1174,7 @@ cudaError_t addWithCuda(
                 fprintf(stderr, "dev_k_V_l cudaMemcpyDeviceToHost failed!");
                 goto Error;
             }
-            cudaStatus = cudaMemcpy(net_F, dev_net_F, ncol * (nlay + 1) * sizeof(double), cudaMemcpyDeviceToHost);
-            if (cudaStatus != cudaSuccess) {
-                fprintf(stderr, "dev_net_F cudaMemcpyDeviceToHost failed!");
-                goto Error;
-            }
+            
 
             cudaStatus = cudaMemcpy(met, dev_met, ncol * (nlay + 1) * sizeof(double), cudaMemcpyDeviceToHost);
             if (cudaStatus != cudaSuccess) {
