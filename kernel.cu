@@ -170,6 +170,7 @@ __global__ void kernel_RT_loop(
 
         }
 
+        met[id] = 4;
 
     }
 }
@@ -579,7 +580,8 @@ int main()
     // print time difference <<<<<<<
     double seconds;
     seconds = difftime(timer1, timer2);
-    cout <<  n_step << " | " << "took: " << seconds << endl;
+    cout <<  n_step[0] << " | " << "took: " << seconds << endl;
+    cout << "met : " << met << endl;
 
     
 
@@ -1181,6 +1183,13 @@ cudaError_t addWithCuda(
                 fprintf(stderr, "dev_net_F cudaMemcpyDeviceToHost failed!");
                 goto Error;
             }
+
+            cudaStatus = cudaMemcpy(met, dev_met, ncol * (nlay + 1) * sizeof(double), cudaMemcpyDeviceToHost);
+            if (cudaStatus != cudaSuccess) {
+                fprintf(stderr, "dev_net_F cudaMemcpyDeviceToHost failed!");
+                goto Error;
+            }
+
 
         Error:
             // Release GPU memory
