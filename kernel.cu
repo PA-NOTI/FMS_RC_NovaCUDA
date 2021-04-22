@@ -1016,11 +1016,7 @@ cudaError_t addWithCuda(
         fprintf(stderr, "dev_Beta cudaMemcpyHostToDevice failed!");
         goto Error;
     }
-    cudaStatus = cudaMemcpy(dev_net_F, net_F, ncol * (nlay + 1) * sizeof(double), cudaMemcpyHostToDevice);
-    if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "dev_net_F cudaMemcpyHostToDevice failed!");
-        goto Error;
-    }
+    
     cudaStatus = cudaMemcpy(dev_mu_s, mu_s, ncol * sizeof(double), cudaMemcpyHostToDevice);
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "dev_mu_s cudaMemcpyHostToDevice failed!");
