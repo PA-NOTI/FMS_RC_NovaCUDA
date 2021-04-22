@@ -581,7 +581,7 @@ int main()
     double seconds;
     seconds = difftime(timer1, timer2);
     cout <<  n_step[0] << " | " << "took: " << seconds << endl;
-    cout << "met : " << met << endl;
+    cout << "met : " << met[0] << endl;
 
     
 
