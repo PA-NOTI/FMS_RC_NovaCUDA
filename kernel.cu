@@ -170,8 +170,6 @@ __global__ void kernel_RT_loop(
 
         }
 
-        
-        met[id] = 4;
     }
 
 }
@@ -304,7 +302,7 @@ int main()
     inFile.open(a_sh);
     if (!inFile)
     {
-        //cout << "\nError opening the file: " << a_sh << endl;
+        cout << "\nError opening the file: " << a_sh << endl;
         return 13;
     }
     for (i = 0; i < nlay1; i++)
@@ -316,7 +314,7 @@ int main()
     inFile.open(b_sh);
     if (!inFile)
     {
-        //cout << "\nError opening the file: " << b_sh << endl;
+        cout << "\nError opening the file: " << b_sh << endl;
         return 13;
     }
     for (i = 0; i < nlay1; i++)
@@ -385,9 +383,9 @@ int main()
     double fl = (double)1.0;
 
     double tau_hf_e[nlay1] = { 0 };
-    double kRoss_hf_e[nlay1];
-    double tau_IRl_hf_l[0 + nlay];
-    double gradrad_hf_l[0 + nlay] = { 0.0 }, gradad_hf_l[0 + nlay] = { 0.0 };
+    double kRoss_hf_e[nlay1] = { 0 };
+    double tau_IRl_hf_l[ nlay] = { 0 };
+    double gradrad_hf_l[ nlay] = { 0.0 }, gradad_hf_l[nlay] = { 0.0 };
 
 
     double work_pl[nlay];
