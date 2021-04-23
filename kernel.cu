@@ -131,8 +131,8 @@ __global__ void kernel_RT_loop(
             //!call Toon_TS_noscatt(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Fint, grav, AB)
             //!call DISORT_TS(nlay, nlay1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F, mu_s, F0, Tint, grav, AB)
             Kitzmann_TS_noscatt(id, nlay,
-                nlay + 1, T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F,
-                mu_s[id], F0[id], Fint[id], grav[0], AB[0],
+                (nlay + 1), T, pl, pe, k_V_l, k_IR_l, Beta_V, Beta, net_F,
+                mu_s[id], F0[id], Fint[id], grav[id], AB[id],
 
                 tau_Ve__df_e, tau_IRe__df_e, Te__df_e, be__df_e, //Kitzman working variables
                 sw_down__df_e, sw_down_b__df_e, sw_up__df_e,
@@ -147,7 +147,7 @@ __global__ void kernel_RT_loop(
 
             for (int level = 0; level < nlay; level++)
             {
-                dT_rad[id*nlay+level] = (grav[0] / cp_air[0]) *
+                dT_rad[id*nlay+level] = (grav[id] / cp_air[id]) *
                     (net_F[id * (nlay+1) + level + 1] - net_F[id * (nlay+1) + level]) / (pe[id * (nlay+1) + level + 1] - pe[id * (nlay+1) + level]);
 
             }
@@ -156,13 +156,13 @@ __global__ void kernel_RT_loop(
 
             // Dry convective adjustment using Ray's code
             Ray_dry_adj(id,nlay, nlay + 1,
-                t_step[0], kappa_air[0], T, pl, pe, dT_conv,
+                t_step[id], kappa_air[id], T, pl, pe, dT_conv,
                 Tl_cc__df_l, d_p__df_l);
 
             // Forward march the temperature change from convection
             for (int level = 0; level < nlay; level++)
             {
-                T[id * nlay + level] = T[id * nlay + level] + t_step[0] * (dT_conv[id * nlay + level] + dT_rad[id * nlay + level]);
+                T[id * nlay + level] = T[id * nlay + level] + t_step[id] * (dT_conv[id * nlay + level] + dT_rad[id * nlay + level]);
             }
 
             
@@ -170,9 +170,10 @@ __global__ void kernel_RT_loop(
 
         }
 
+        
         met[id] = 4;
-
     }
+
 }
 
                 
@@ -333,7 +334,7 @@ int main()
     {
         for (i = 0; i < nlay1; i++)
         {
-            pe[c * nlay1 + i] = a[c * c + i] + b[c * nlay1 + i] * p0;
+            pe[c * nlay1 + i] = a[c * nlay1 + i] + b[c * nlay1 + i] * p0;
            // cout << "pe[i]  " << pe[c * nlay1 + i] << endl;
 
         }
@@ -352,7 +353,7 @@ int main()
     {
         for (i = 0; i < nlay; i++)
         {
-            pl[c * nlay + i] = (pe[c * nlay + i + 1] - pe[c * nlay + i]) / (logl(pe[c * nlay + i + 1]) - logl(pe[c * nlay + i]));
+            pl[c * nlay + i] = (pe[c * nlay1 + i + 1] - pe[c * nlay1 + i]) / (logl(pe[c * nlay1 + i + 1]) - logl(pe[c * nlay1 + i]));
 
         }
     }
